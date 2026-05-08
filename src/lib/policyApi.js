@@ -93,20 +93,3 @@ export async function deleteItem(id) {
   const { error } = await requireSupabase().from("policy_items").delete().eq("id", id);
   if (error) throw error;
 }
-
-export async function getCurrentWeekLabel() {
-  const { data, error } = await requireSupabase()
-    .from("site_settings")
-    .select("current_week_label")
-    .eq("id", 1)
-    .single();
-  if (error) throw error;
-  return data?.current_week_label || "";
-}
-
-export async function updateCurrentWeekLabel(label) {
-  const { error } = await requireSupabase()
-    .from("site_settings")
-    .upsert({ id: 1, current_week_label: label, updated_at: new Date().toISOString() });
-  if (error) throw error;
-}

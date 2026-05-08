@@ -2,20 +2,17 @@ import { useEffect, useMemo, useState } from "react";
 import AdminNav from "../components/AdminNav";
 import Loading from "../components/Loading";
 import { CATEGORIES } from "../lib/constants";
-import { getAllItemsForAdmin, getCurrentWeekLabel, updateCurrentWeekLabel } from "../lib/policyApi";
+import { getCurrentWeekLabel } from "../lib/dateLabel";
+import { getAllItemsForAdmin } from "../lib/policyApi";
 
 export default function AdminDashboard() {
   const [items, setItems] = useState([]);
-  const [currentWeek, setCurrentWeek] = useState("");
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const currentWeek = getCurrentWeekLabel();
 
   useEffect(() => {
-    Promise.all([getAllItemsForAdmin(), getCurrentWeekLabel()])
-      .then(([loadedItems, label]) => {
-        setItems(loadedItems);
-        setCurrentWeek(label);
-      })
+    getAllItemsForAdmin()
+      .then(setItems)
       .finally(() => setLoading(false));
   }, []);
 
@@ -32,26 +29,17 @@ export default function AdminDashboard() {
     };
   }, [items]);
 
-  async function saveWeekLabel(event) {
-    event.preventDefault();
-    await updateCurrentWeekLabel(currentWeek);
-    setMessage("기준 시점을 저장했습니다.");
-  }
-
   if (loading) return <Loading />;
 
   return (
     <main className="admin-page">
       <AdminNav />
       <h1>관리자 대시보드</h1>
-      <form className="setting-form" onSubmit={saveWeekLabel}>
-        <label>
-          메인 화면 기준 시점
-          <input value={currentWeek} onChange={(e) => setCurrentWeek(e.target.value)} placeholder="2026년 5월 2주" />
-        </label>
-        <button type="submit">저장</button>
-        {message && <p className="success-message">{message}</p>}
-      </form>
+      <section className="setting-form auto-label-box">
+        <strong>메인 화면 기준 시점</strong>
+        <p>{currentWeek}</p>
+        <span>현재 날짜에 맞춰 자동으로 표시됩니다.</span>
+      </section>
 
       <section className="stats-grid">
         <Stat label="전체 콘텐츠" value={stats.total} />

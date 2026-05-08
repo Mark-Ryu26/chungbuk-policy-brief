@@ -4,7 +4,8 @@ import EmptyState from "../components/EmptyState";
 import Loading from "../components/Loading";
 import PolicyCard from "../components/PolicyCard";
 import { CATEGORY_ROUTES } from "../lib/constants";
-import { getCurrentWeekLabel, getPublishedItems } from "../lib/policyApi";
+import { getCurrentWeekLabel } from "../lib/dateLabel";
+import { getPublishedItems } from "../lib/policyApi";
 
 const TABS = [
   { key: "all", label: "전체" },
@@ -21,20 +22,16 @@ const HOME_SECTIONS = [
 
 export default function HomePage() {
   const [items, setItems] = useState([]);
-  const [currentWeek, setCurrentWeek] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const currentWeek = getCurrentWeekLabel();
 
   useEffect(() => {
     async function load() {
       try {
-        const [loadedItems, label] = await Promise.all([
-          getPublishedItems(),
-          getCurrentWeekLabel(),
-        ]);
+        const loadedItems = await getPublishedItems();
         setItems(loadedItems);
-        setCurrentWeek(label);
       } catch (err) {
         setError(err.message || "정책동향을 불러오지 못했습니다.");
       } finally {
@@ -56,7 +53,7 @@ export default function HomePage() {
     <div className="page">
       <section className="week-panel">
         <span>현재 브리핑 기준</span>
-        <strong>{currentWeek || "기준 시점 미입력"}</strong>
+        <strong>{currentWeek}</strong>
       </section>
 
       <div className="tabs">

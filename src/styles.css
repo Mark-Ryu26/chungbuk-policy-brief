@@ -130,6 +130,30 @@ textarea {
   color: #ffffff;
 }
 
+.auto-label-box {
+  gap: 6px;
+  padding: 14px;
+  border: 1px solid #d7ebef;
+  border-radius: 8px;
+  background: #f4fbfa;
+}
+
+.auto-label-box strong {
+  color: #365960;
+}
+
+.auto-label-box p {
+  margin: 0;
+  color: #087b8f;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.auto-label-box span {
+  color: #607b82;
+  font-size: 13px;
+}
+
 .primary-button.full {
   width: 100%;
 }
