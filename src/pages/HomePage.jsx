@@ -17,8 +17,15 @@ const TABS = [
 const HOME_SECTIONS = [
   { title: "이번 주 핫토픽", limit: 3 },
   { title: "이번 달 핫한 정책동향", limit: 4 },
-  { title: "눈여겨 볼 국외 정책동향", limit: 3 },
+  { title: "눈여겨 볼 국외 정책동향", limit: 4 },
 ];
+
+function getLatestSectionItems(items, sectionTitle, limit) {
+  return items
+    .filter((item) => item.sectionType === sectionTitle)
+    .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+    .slice(0, limit);
+}
 
 export default function HomePage() {
   const [items, setItems] = useState([]);
@@ -70,7 +77,7 @@ export default function HomePage() {
       </div>
 
       {HOME_SECTIONS.map((section) => {
-        const sectionItems = filteredItems.filter((item) => item.sectionType === section.title);
+        const sectionItems = getLatestSectionItems(filteredItems, section.title, section.limit);
         return (
           <section className="content-section" key={section.title}>
             <div className="section-title-row">
@@ -78,10 +85,10 @@ export default function HomePage() {
               <Link to="/list/all">더보기</Link>
             </div>
             {sectionItems.length === 0 ? (
-              <EmptyState />
+              <EmptyState message="등록된 콘텐츠가 없습니다." />
             ) : (
               <div className="card-list">
-                {sectionItems.slice(0, section.limit).map((item) => (
+                {sectionItems.map((item) => (
                   <PolicyCard key={item.id} item={item} />
                 ))}
               </div>
