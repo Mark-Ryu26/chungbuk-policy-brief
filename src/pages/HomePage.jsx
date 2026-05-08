@@ -15,9 +15,9 @@ const TABS = [
 ];
 
 const HOME_SECTIONS = [
-  "이번 주 핫토픽",
-  "이번 달 핫한 정책동향",
-  "눈여겨 볼 국외 정책동향",
+  { title: "이번 주 핫토픽", limit: 3 },
+  { title: "이번 달 핫한 정책동향", limit: 4 },
+  { title: "눈여겨 볼 국외 정책동향", limit: 3 },
 ];
 
 export default function HomePage() {
@@ -69,19 +69,19 @@ export default function HomePage() {
         ))}
       </div>
 
-      {HOME_SECTIONS.map((sectionType) => {
-        const sectionItems = filteredItems.filter((item) => item.sectionType === sectionType);
+      {HOME_SECTIONS.map((section) => {
+        const sectionItems = filteredItems.filter((item) => item.sectionType === section.title);
         return (
-          <section className="content-section" key={sectionType}>
+          <section className="content-section" key={section.title}>
             <div className="section-title-row">
-              <h2>{sectionType}</h2>
+              <h2>{section.title}</h2>
               <Link to="/list/all">더보기</Link>
             </div>
             {sectionItems.length === 0 ? (
               <EmptyState />
             ) : (
               <div className="card-list">
-                {sectionItems.slice(0, 5).map((item) => (
+                {sectionItems.slice(0, section.limit).map((item) => (
                   <PolicyCard key={item.id} item={item} />
                 ))}
               </div>
